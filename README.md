@@ -13,6 +13,7 @@
 ## Why I Chose This Issue
 
 I chose this issue because it covers some concepts related to Cloud Engineering, which aligns with my future career ambitions. In addition this issue dealt with a common issue found in many cloud infrastructures, which is the handling of cloud attacks that compromise ones credentials.  
+
 ---
 
 ## Understanding the Issue
