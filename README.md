@@ -1,4 +1,4 @@
-# Contribution [#]: [Issue Title]
+# Contribution 1: Add Sigma Detection for Unauthorized Cloud Metadata Service Access
 
 **Contribution Number:** [1 / 2 / 3] 
 
@@ -49,6 +49,25 @@ AWS cloud credentials can be comprised in an attack like this.
 3. Created a didcated innerwarden service user, and downloaded sensor + agent + ctl binaries. And it wrote a config to /etc/innerwarden
 4. Can also use the following [instructions](https://github.com/jtega149/innerwarden/blob/main/CONTRIBUTING.md), very helpful for contributors
 
+Or Use:
+```bash
+# 1. Fork + clone
+gh repo fork InnerWarden/innerwarden --clone --remote
+cd innerwarden
+
+# 2. Toolchain (rustup picks the pinned version from rust-toolchain.toml if present)
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+rustup component add rustfmt clippy
+
+# 3. Build + test
+make test       # all unit + integration tests
+make build      # debug binaries for sensor / agent / ctl
+
+# 4. Try the dashboard locally
+cargo run -p innerwarden-agent -- --data-dir ./data --dashboard
+# open http://127.0.0.1:7378 (default admin password: innerwarden)
+```
+
 ### Reproduction Evidence
 
 - **Commit showing reproduction:** [https://github.com/jtega149/innerwarden/commit/d0be1abcb325adc5e0fdce86db24f814c3ff2e9d]
@@ -60,30 +79,46 @@ AWS cloud credentials can be comprised in an attack like this.
 
 ### Analysis
 
-[Your analysis of the root cause - what's causing the issue?]
+The issue is that the system is prone to attack via scraping of the cloud instance metadata service (IMDS), because any process that hits this endpoint is either a valid cloud init / monitoring agent (small allowlist), or an attacker enumerating cloud credentials. The issue here is that there is no Sigma rule that matches outbound network connections to `169.254.169.254` from processes that aren't on a small allowlist of legit metadata clients.
 
 ### Proposed Solution
 
-[High-level description of your fix approach]
+1. Review current Sigma rule structure and detection patterns.
+2. Create a rule that matches `169.254.169.254` access from non-allowlisted processes.
+3. Verify alerts fire for unauthorized processes and are suppressed for approved clients.
+4. Confirm the rule loads correctly and includes the proper severity and MITRE mapping.
 
 ### Implementation Plan
 
 Using UMPIRE framework (adapted):
 
-**Understand:** [Restate the problem]
+**Understand:**
 
-**Match:** [What similar patterns/solutions exist in the codebase?]
+Add a new Sigma rule that detects processes accessing the cloud instance metadata service (169.254.169.254) unless the process is part of an approved allowlist of legitimate metadata clients.
 
-**Plan:** [Step-by-step implementation plan]
-1. [Modify file X to do Y]
-2. [Add function Z]
-3. [Update tests]
+**Match:** 
+
+Use existing Linux Sigma rules in rules/sigma/ as references for rule structure, detection syntax, severity levels, and MITRE ATT&CK mappings.
+
+**Plan:**
+
+1. Review existing Sigma rules and confirm the supported field names (destination_ip, process_comm).
+2. Create rules/sigma/network/lnx_imds_access_from_non_metadata_client.yml with detection logic for IMDS access from non-allowlisted processes.
+3. Validate that the rule is loaded by the Sigma rule loader and test against sample events.
 
 **Implement:** [Link to your branch/commits as you work]
 
-**Review:** [Self-review checklist - does it follow the project's contribution guidelines?]
+Link: https://github.com/jtega149/innerwarden
 
-**Evaluate:** [How will you verify it works?]
+**Review:**
+
+- [ ] Rule follows existing project conventions and Sigma format.
+- [ ] Severity is set to Medium.
+- [ ] MITRE ATT&CK mapping is T1552.005.
+- [ ] Allowlist contains all specified metadata clients.
+- [ ] Rule file is placed in the correct directory and loads successfully.
+
+**Evaluate:** Run the test cases provided on the app itself, and then try to access the endpoint from a process that isn't on the allowlist
 
 ---
 
