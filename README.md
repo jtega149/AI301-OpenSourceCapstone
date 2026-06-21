@@ -161,6 +161,7 @@ Link: https://github.com/jtega149/innerwarden
     - rules/sigma/network/Instructions.md
 - **Key commits:** [Links to important commits]
     - [Commit 1](https://github.com/jtega149/innerwarden/commit/5035b2e5b6045e3a5fe13b6d8188a893d5999463)
+    - [Commit 2](https://github.com/jtega149/innerwarden/commit/a469af185449a2125527a95ef89063b70041da05)
 - **Approach decisions:** [Why you chose certain approaches]
     - Rule must live here in order to correctly operate as other rules
     - Instructions MD so claude and agents have context of problem I am working on
