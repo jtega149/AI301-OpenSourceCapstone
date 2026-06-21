@@ -126,8 +126,8 @@ Link: https://github.com/jtega149/innerwarden
 
 ### Unit Tests
 
-- [ ] Test case 1: [Description]
-- [ ] Test case 2: [Description]
+- [ ] Test case 1: Test if any processes that don't come from allowlist are redirected
+- [ ] Test case 2: Test to see if `169.254.169.254` recieves any process in allowlist 
 - [ ] Test case 3: [Description]
 
 ### Integration Tests
@@ -138,14 +138,17 @@ Link: https://github.com/jtega149/innerwarden
 ### Manual Testing
 
 [What you tested manually and results]
+- Ran ```make test``` command provided by app, 84 unit tests fail
 
 ---
 
 ## Implementation Notes
 
-### Week [X] Progress
+### Week [1] Progress
 
-[What you built this week, challenges faced, decisions made]
+- Created the YML file within the rules/sigma/network
+- Drafted out code for the YML file
+- Some unit tests aren't working currently, will need to see if I configured project correctly
 
 ### Week [Y] Progress
 
@@ -154,9 +157,13 @@ Link: https://github.com/jtega149/innerwarden
 ### Code Changes
 
 - **Files modified:** [List]
+    - rules/sigma/network/lnx_imds_access_from_non_metadata_client.yml
+    - rules/sigma/network/Instructions.md
 - **Key commits:** [Links to important commits]
+    - [Commit 1](https://github.com/jtega149/innerwarden/commit/5035b2e5b6045e3a5fe13b6d8188a893d5999463)
 - **Approach decisions:** [Why you chose certain approaches]
-
+    - Rule must live here in order to correctly operate as other rules
+    - Instructions MD so claude and agents have context of problem I am working on
 ---
 
 ## Pull Request
