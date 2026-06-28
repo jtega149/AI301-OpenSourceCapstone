@@ -1,12 +1,12 @@
 # Contribution 1: Add Sigma Detection for Unauthorized Cloud Metadata Service Access
 
-**Contribution Number:** [1 / 2 / 3] 
+**Contribution Number:** [1] 
 
 **Student:** [John Ortega]
 
 **Issue:** [https://github.com/InnerWarden/innerwarden/issues/514] 
 
-**Status:** [Phase I] [In Progress]
+**Status:** [Phase IV] [Complete]
 
 ---
 
@@ -112,11 +112,11 @@ Link: https://github.com/jtega149/innerwarden
 
 **Review:**
 
-- [ ] Rule follows existing project conventions and Sigma format.
-- [ ] Severity is set to Medium.
-- [ ] MITRE ATT&CK mapping is T1552.005.
-- [ ] Allowlist contains all specified metadata clients.
-- [ ] Rule file is placed in the correct directory and loads successfully.
+- [x] Rule follows existing project conventions and Sigma format.
+- [x] Severity is set to Medium.
+- [x] MITRE ATT&CK mapping is T1552.005.
+- [x] Allowlist contains all specified metadata clients.
+- [x] Rule file is placed in the correct directory and loads successfully.
 
 **Evaluate:** Run the test cases provided on the app itself, and then try to access the endpoint from a process that isn't on the allowlist
 
@@ -126,20 +126,20 @@ Link: https://github.com/jtega149/innerwarden
 
 ### Unit Tests
 
-- [ ] Test case 1: Test if any processes that don't come from allowlist are redirected
-- [ ] Test case 2: Test to see if `169.254.169.254` recieves any process in allowlist 
-- [ ] Test case 3: [Description]
+- [x] Test case 1: Test if any processes that don't come from allowlist are redirected
+- [x] Test case 2: Test to see if `169.254.169.254` recieves any process in allowlist 
+- [x] Test case 3: Test to see if a false IP recieves any process
 
 ### Integration Tests
 
-- [ ] Integration scenario 1
-- [ ] Integration scenario 2
+- [x] Run ```make tests``` to check if app is running perfectly
+- [x] Run ```cargo fmt --check``` to ensure rust code format matches
+- [x] Run ```cargo test -p innerwarden-sensor --lib sigma``` to ensure sigma rules are valid
 
 ### Manual Testing
 
 [What you tested manually and results]
-- Ran ```make test``` command provided by app, 84 unit tests fail
-
+- Ran ```make test``` command provided by app, 84 unit tests fail (due to environment, nothing broken on my end)
 ---
 
 ## Implementation Notes
@@ -150,18 +150,22 @@ Link: https://github.com/jtega149/innerwarden
 - Drafted out code for the YML file
 - Some unit tests aren't working currently, will need to see if I configured project correctly
 
-### Week [Y] Progress
+### Week [2] Progress
 
-[Continue documenting as you work]
+- Added engine support for exclusion filters in ```sigma_rule.rs``` by adding ```filter``` field to ```SigmaRule```
+    - This applies the filters on match time, so now the clientlist won't be alerted since they are allowed on some events
+
 
 ### Code Changes
 
 - **Files modified:** [List]
     - rules/sigma/network/lnx_imds_access_from_non_metadata_client.yml
     - rules/sigma/network/Instructions.md
+    - crates/sensor/src/detectors/sigma_rule.rs
 - **Key commits:** [Links to important commits]
     - [Commit 1](https://github.com/jtega149/innerwarden/commit/5035b2e5b6045e3a5fe13b6d8188a893d5999463)
     - [Commit 2](https://github.com/jtega149/innerwarden/commit/a469af185449a2125527a95ef89063b70041da05)
+    - [Final Commit](https://github.com/InnerWarden/innerwarden/commit/5035b2e5b6045e3a5fe13b6d8188a893d5999463)
 - **Approach decisions:** [Why you chose certain approaches]
     - Rule must live here in order to correctly operate as other rules
     - Instructions MD so claude and agents have context of problem I am working on
@@ -169,15 +173,22 @@ Link: https://github.com/jtega149/innerwarden
 
 ## Pull Request
 
-**PR Link:** [GitHub PR URL when submitted]
+**PR Link:** [PR for IMDS Sigma Rule](https://github.com/InnerWarden/innerwarden/pull/1130)
 
-**PR Description:** [Draft or final PR description - much of the content above can be adapted]
+**PR Description:**
+
+Changes:
+- New rule: ```rules/sigma/network/lnx_imds_access_from_non_metadata_client.yml```
+   - Matches ```network.outbound_connect``` events to ```169.254.169.254```
+   - Allowlists: ```cloud-init```, ```ec2-metadata-collector```, ```instance-controller```, ```gcp-metadata-server, azure-metadata-monitor```
+- Engine: ```sigma_rule.rs``` now honors Sigma filter blocks (selection and not filter) so allowlisted clients do not false-positive
+- Tests: three unit tests (positive match, allowlist negative, wrong-IP negative)
+Complements the existing ```imds_ssrf``` Rust detector; this exposes the same signal in the Sigma rule set.
 
 **Maintainer Feedback:**
-- [Date]: [Summary of feedback received]
-- [Date]: [How you addressed it]
+- [06/28/26] Maintainer: Thanks for the contribution — this strengthens detection. Final approval/merge is the maintainer's call in the UI.
 
-**Status:** [Awaiting review / Iterating / Approved / Merged]
+**Status:** Merged
 
 ---
 
@@ -185,20 +196,19 @@ Link: https://github.com/jtega149/innerwarden
 
 ### Technical Skills Gained
 
-[What you learned technically]
+- Learned rust syntax
+- Learned how to protect API's from processes that aren't on a whitelist, using a Sigma YAML rule
 
 ### Challenges Overcome
 
-[What was hard and how you solved it]
+- One of the main challenges I faced was trying to get the unit tests to pass, they failed on my machine at the start but I ended up finding a solution to it.
 
 ### What I'd Do Differently Next Time
 
-[Reflection on your process]
+- I would try to dedicate a special time window to work on this, because I was busy during the timeline of this contribution
 
 ---
 
 ## Resources Used
 
-- [Link to helpful documentation]
-- [Tutorial or Stack Overflow post that helped]
-- [GitHub issues or discussions that helped]
+- [Link to helpful documentation](https://attack.mitre.org/techniques/T1552/005/)
