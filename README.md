@@ -38,6 +38,11 @@ AWS cloud credentials can be comprised in an attack like this.
 
 ## Reproduction Process
 
+### [NOTE] Here is a link to my working branch on the forked repo:
+```bash
+https://github.com/jtega149/innerwarden/tree/fix-issue-514
+```
+
 ### Environment Setup
 
 I used the following set up in order to set up innerwarden on my local machine
