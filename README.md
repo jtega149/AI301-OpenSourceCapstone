@@ -40,7 +40,7 @@ AWS cloud credentials can be comprised in an attack like this.
 
 ### Environment Setup
 
-[Notes on setting up your local development environment - challenges you faced, how you solved them]
+I used the following set up in order to set up innerwarden on my local machine
 
 ### Steps to Reproduce
 
