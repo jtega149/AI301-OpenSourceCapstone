@@ -38,9 +38,14 @@ AWS cloud credentials can be comprised in an attack like this.
 
 ## Reproduction Process
 
+### [NOTE] Here is a link to my working branch on the forked repo:
+```bash
+https://github.com/jtega149/innerwarden/tree/fix-issue-514
+```
+
 ### Environment Setup
 
-[Notes on setting up your local development environment - challenges you faced, how you solved them]
+I used the following set up in order to set up innerwarden on my local machine
 
 ### Steps to Reproduce
 
@@ -202,10 +207,12 @@ Complements the existing ```imds_ssrf``` Rust detector; this exposes the same si
 ### Challenges Overcome
 
 - One of the main challenges I faced was trying to get the unit tests to pass, they failed on my machine at the start but I ended up finding a solution to it.
+- I was having trouble understanding the syntax for rust but I ended up having claude give me brief explanations for the syntax.
 
 ### What I'd Do Differently Next Time
 
-- I would try to dedicate a special time window to work on this, because I was busy during the timeline of this contribution
+- Next time I would communicate with the contributors if they have faced the issue regarding test set ups as well, because if I had asked earlier I would've known way beforehand how to solve it.
+- For understanding syntax related problems, I'd use Claude learning mode in order to actually teach me the new syntax that I am dealing with.
 
 ---
 
