@@ -3,7 +3,7 @@
 **Contribution Number:** [2]  
 **Student:** [John Ortega]  
 **Issue:** [Implement deregistration for providers with Cloud API](https://github.com/the-momentum/open-wearables/issues/682)  
-**Status:** [Phase II] [In Progress]
+**Status:** [Phase III] [In Progress]
 
 ---
 
@@ -97,7 +97,8 @@ Note:
 
 - **Commit showing reproduction:** [https://github.com/jtega149/open-wearables]
 - **Screenshots/logs:** [If applicable]
-- **My findings:** [What you discovered during reproduction]
+- **My findings:**
+   - Dashboard with the ability to add users and connect them with providers via OAuth
 
 ---
 
@@ -105,11 +106,14 @@ Note:
 
 ### Analysis
 
-[Your analysis of the root cause - what's causing the issue?]
+The root cause of this issue is that the OAuth classes of most providers, doesn't override the deregister_user method of the base class BaseOAuth template. However majority of these providers do in fact have a valid endpoint for revoking access tokens.
 
 ### Proposed Solution
 
-[High-level description of your fix approach]
+I made a step by step plan for my solution:
+- Look at all the providers that the app uses, and investigate which has a valid deregistering endpoint
+- Override the ```deregister_user``` method in the classes within the ```oauth.py``` file of the providers that have valid deregistering endpoints
+- Add unit tests for Polar provider's oauth testing as this uses an extra parameter and must be validated against
 
 ### Implementation Plan
 
@@ -128,15 +132,20 @@ Using UMPIRE framework (adapted):
 6. Update any relevant docs or API reference for the deregistration endpoint.
 
 **Implement:**
+
 - [First Commit](https://github.com/jtega149/open-wearables)
+- [Adding unit tests for Polar deregistration](https://github.com/the-momentum/open-wearables/commit/ae026ca95f115d58fbc5cfa4990654f24e91370f)
+- [Overriding `deregister_user` methods](https://github.com/the-momentum/open-wearables/commit/42818f2bc3df50eb6f916161b4b7a4991fe8050c)
+- [Adding a proper commit message](https://github.com/the-momentum/open-wearables/commit/32b37b4b323648edc83a3ec5f89229c5b72c4269)
+- [Final Commit, switching out legacy Strava deregistration endpoint](https://github.com/the-momentum/open-wearables/commit/1b3568998a55370f94da304bb6738b6e290d41c0)
 
 **Review:**
-- [ ] Follows the project's existing code style and naming conventions in `base_oauth.py`
-- [ ] Abstract method is properly documented (docstring explaining expected behavior/return)
-- [ ] No provider-specific logic leaked into the base class
-- [ ] Tests added for each newly implemented provider
-- [ ] Existing Garmin deregistration flow still works (no regression)
-- [ ] PR description references issue #682 and #638 for context
+- [x] Follows the project's existing code style and naming conventions in `base_oauth.py`
+- [x] Abstract method is properly documented (docstring explaining expected behavior/return)
+- [x] No provider-specific logic leaked into the base class
+- [x] Tests added for each newly implemented provider
+- [x] Existing Garmin deregistration flow still works (no regression)
+- [x] PR description references issue #682 and #638 for context
 
 **Evaluate:**
 
@@ -148,50 +157,115 @@ Run the existing/new test suite locally to confirm each provider's `deregister_u
 
 ### Unit Tests
 
-- [ ] Test case 1: [Description]
-- [ ] Test case 2: [Description]
-- [ ] Test case 3: [Description]
+- [x] Test case 1: [Test calling polar deregistration endpoint]
+- [x] Test case 2: [Test HTTP error on polar deregistration being handled by caller]
 
 ### Integration Tests
 
-- [ ] Integration scenario 1
-- [ ] Integration scenario 2
+- [x] Integration scenario 1: [Run `uv run pre-commit run --all-files` to ensure other integration tests pass]
 
 ### Manual Testing
 
-[What you tested manually and results]
+- I made accounts for some of these other providers, then registered them to a user and deregistered them at the same time to test the new deregistration.
 
 ---
 
 ## Implementation Notes
 
-### Week [X] Progress
+### Week [1] Progress
 
-[What you built this week, challenges faced, decisions made]
+- Update deregister_user signature to include user_id as a optional parameter
+- Override `deregister_user` in Polar's oauth class, utilizing `provider_user_id` as required for polar deregistration
 
-### Week [Y] Progress
+### Week [2] Progress
 
-[Continue documenting as you work]
+- Override `deregister_user` in the following remaining providers: FitBit, Oura, UltraHuman, Strava, Whoop.
+
+### Week [3] Progress
+
+- Update any calls to `deregister_user` throughout the codebase, so that it correctly passes the `provider_user_id`
+- Add unit tests for deregistering a user within Polars OAuth test file
 
 ### Code Changes
 
-- **Files modified:** [List]
-- **Key commits:** [Links to important commits]
-- **Approach decisions:** [Why you chose certain approaches]
+- **Files modified:**
+   1. backend/app/services/providers/fitbit/oauth.py
+   2. backend/app/services/providers/garmin/oauth.py
+   3. backend/app/services/providers/oura/oauth.py
+   4. backend/app/services/providers/polar/oauth.py
+   5. backend/app/services/providers/strava/oauth.py
+   6. backend/app/services/providers/templates/base_oauth.py
+   7. backend/app/services/providers/ultrahuman/oauth.py
+   8. backend/app/services/providers/whoop/oauth.py
+   9. backend/app/services/user_connection_service.py
+   10. backend/app/services/user_service.py
+   11. backend/tests/providers/polar/test_polar_oauth.py
+- **Key commits:**
+   - [Adding unit tests for Polar deregistration](https://github.com/the-momentum/open-wearables/commit/ae026ca95f115d58fbc5cfa4990654f24e91370f)
+   - [Overriding `deregister_user` methods](https://github.com/the-momentum/open-wearables/commit/42818f2bc3df50eb6f916161b4b7a4991fe8050c)
+   - [Adding a proper commit message](https://github.com/the-momentum/open-wearables/commit/32b37b4b323648edc83a3ec5f89229c5b72c4269)
+   - [Final Commit, switching out legacy Strava deregistration endpoint](https://github.com/the-momentum/open-wearables/commit/1b3568998a55370f94da304bb6738b6e290d41c0)
+- **Approach decisions:**
+   - The most important approach I took was adding the `provider_user_id` parameter to the deregistration method, and I made this descision because Polar was one of the providers that required it for deregistering.
 
 ---
 
 ## Pull Request
 
-**PR Link:** [GitHub PR URL when submitted]
+**PR Link:** [GitHub PR URL](https://github.com/the-momentum/open-wearables/pull/1320)
 
-**PR Description:** [Draft or final PR description - much of the content above can be adapted]
+**PR Description:**
+
+Adds provider-side OAuth deregistration for Fitbit, Oura, Polar, Ultrahuman, and Whoop when a user disconnects or is deleted.
+
+Previously only Garmin (and Strava) implemented `deregister_user`; other providers fell through to the base no-op. This wires real revoke/deregister API calls for the providers that support them, extends `deregister_user` with an optional `provider_user_id` (required by Polar’s `DELETE /v3/users/{user-id}`), and passes that id from the disconnect and user-delete call sites. Polar deregistration is covered with unit tests. Suunto remains on the base no-op pending a confirmed deauthorize API.
+
+Closes #682
+
+**Checklist**
+
+**General**
+
+- [x] My code follows the project's code style
+- [x] I have performed a self-review of my code
+- [x] I have added tests that prove my fix/feature works (if applicable)
+- [x] New and existing tests pass locally
+- [x] I have updated relevant documentation in `docs/` (or no docs update needed)
+
+**Backend Changes**
+
+<!-- If your PR includes backend changes, please verify: -->
+You have to be in `backend` directory to make it work:
+- [x] `uv run pre-commit run --all-files` passes
+
+**Frontend Changes**
+
+<!-- If your PR includes frontend changes, please verify: -->
+
+- [ ] `pnpm run lint` passes
+- [ ] `pnpm run format:check` passes
+- [ ] `pnpm run build` succeeds
+
+**Testing Instructions**
+
+<!-- Describe how reviewers can test your changes -->
+
+**Steps to test:**
+1. From `backend/`, run: `uv run pytest tests/providers/polar/test_polar_oauth.py::TestPolarUserDeregistration -v`
+2. (Optional) Connect a provider that implements deregistration (e.g. Fitbit/Whoop/Oura), then disconnect it from the user’s **Connected Providers** card (... -> Disconnect).
+3. Confirm backend logs show a successful deregister, or a captured error if the provider call fails (local disconnect should still complete).
+
+**Expected behavior:**
+- Polar unit tests pass (success path, HTTP error propagation, missing `provider_user_id` raises `ValueError`).
+- On disconnect/user delete, providers with `deregister_user` overrides call their revoke/deregister APIs with the access token (and Polar with `provider_user_id`).
+- Deregistration failures are best-effort and do not block local disconnect/delete.
 
 **Maintainer Feedback:**
 - [Date]: [Summary of feedback received]
 - [Date]: [How you addressed it]
 
-**Status:** [Awaiting review / Iterating / Approved / Merged]
+<!-- Statuses: Awaiting review / Iterating / Approved / Merged-->
+**Status:** [Awaiting review]
 
 ---
 
@@ -199,20 +273,20 @@ Run the existing/new test suite locally to confirm each provider's `deregister_u
 
 ### Technical Skills Gained
 
-[What you learned technically]
+I learned the importance of Object Oriented Programming in massive applications, many of my personal project's have similar features to this app, however this app takes heavy use of OOP principles when compared to the apps I typically do. It made me appreciate OOP more and made me more aware of where I can integrate it in my codebase.
 
 ### Challenges Overcome
 
-[What was hard and how you solved it]
+One of the providers didn't have any documentation on any existing endpoints for revoking access tokens, therefore I simply let the base class handle the providers specific deregistering method.
 
 ### What I'd Do Differently Next Time
 
-[Reflection on your process]
+I'd defintely communicate more with the collaborators of this project, as they had a discord that I was unaware of. This discord was mean't for contributors as well, and it would've served as a great help for me along this process.
 
 ---
 
 ## Resources Used
 
-- [Link to helpful documentation]
-- [Tutorial or Stack Overflow post that helped]
-- [GitHub issues or discussions that helped]
+- [Deregistering on Garmin](https://github.com/the-momentum/open-wearables/pull/638)
+- [Oura OAuth Documentation](https://cloud.ouraring.com/v2/docs)
+- [Polar OAuth Documentation](https://polar.sh/docs/integrate/oauth2/connect)
