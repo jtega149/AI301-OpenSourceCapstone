@@ -1,4 +1,4 @@
-# Contribution [2]: [Issue Title]
+# Contribution [2]: [Add deregistration for providers with Cloud API]
 
 **Contribution Number:** [2]  
 **Student:** [John Ortega]  
