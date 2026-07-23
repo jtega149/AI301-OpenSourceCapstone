@@ -3,7 +3,7 @@
 **Contribution Number:** [2]  
 **Student:** [John Ortega]  
 **Issue:** [Implement deregistration for providers with Cloud API](https://github.com/the-momentum/open-wearables/issues/682)  
-**Status:** [Phase III] [In Progress]
+**Status:** [Phase IV] [Complete]
 
 ---
 
