@@ -261,11 +261,13 @@ You have to be in `backend` directory to make it work:
 - Deregistration failures are best-effort and do not block local disconnect/delete.
 
 **Maintainer Feedback:**
-- [Date]: [Summary of feedback received]
-- [Date]: [How you addressed it]
+- [07/01/2026]: Maintainer's initially wanted Polar deregistration to be implemented, but it was done by another contributor. However they followed up and let me know that I can work on it because the previous contributor broke the codebase because his implementation was vibe coded.
+- [07/18/2026]: From my initial PR, the bot had told me the current endpoint I used for Strava deregistration was a legacy endpoint, and there was a new version I should use instead, which I ended up updating. [Commit Reference](https://github.com/the-momentum/open-wearables/pull/1320/changes/1b3568998a55370f94da304bb6738b6e290d41c0)
+- [07/20/2026]: From my initial PR, the bot had told me I updated formatting of a markdown file, I reverted it to its original form just to not cause any confusion amongst the contributors. [Commit Reference](https://github.com/the-momentum/open-wearables/pull/1320/changes/fe3502416a55fe659bff2c11f7d7b719b773f66a)
+- [07/20/2026]: Maintainer simply thanked me for the contribution, no problems occured
 
 <!-- Statuses: Awaiting review / Iterating / Approved / Merged-->
-**Status:** [Awaiting review]
+**Status:** [Merged]
 
 ---
 
