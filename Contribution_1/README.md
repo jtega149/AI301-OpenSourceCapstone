@@ -45,7 +45,7 @@ https://github.com/jtega149/innerwarden/tree/fix-issue-514
 
 ### Environment Setup
 
-I used the following set up in order to set up innerwarden on my local machine
+I used the following set up in order to set up innerwarden on my local machine. Initially after the setup, I ran the unit + integration tests and noticed a couple had failed, and I figured there was an issue on my machine for this. However after speaking with the maintainers, they were issues that I could ignore due to the set up being local. 
 
 ### Steps to Reproduce
 

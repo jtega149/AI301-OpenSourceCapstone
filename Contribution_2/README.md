@@ -41,6 +41,8 @@ The set up is as easy as cloning or forking the repo, and then setting environme
 Note:
     - Theres also the option to create your own admin account for the app itself on your local machine
 
+The one problem I faced was setting up the backend because I was missing some environment variables. To overcome this problem I ended up looking at the [documentation](https://openwearables.io/docs/quickstart#test-the-api)
+
 ### Steps to Reproduce
 
 1. **Clone the repository:**
@@ -96,7 +98,6 @@ Note:
 ### Reproduction Evidence
 
 - **Commit showing reproduction:** [https://github.com/jtega149/open-wearables]
-- **Screenshots/logs:** [If applicable]
 - **My findings:**
    - Dashboard with the ability to add users and connect them with providers via OAuth
 
@@ -237,14 +238,6 @@ Closes #682
 <!-- If your PR includes backend changes, please verify: -->
 You have to be in `backend` directory to make it work:
 - [x] `uv run pre-commit run --all-files` passes
-
-**Frontend Changes**
-
-<!-- If your PR includes frontend changes, please verify: -->
-
-- [ ] `pnpm run lint` passes
-- [ ] `pnpm run format:check` passes
-- [ ] `pnpm run build` succeeds
 
 **Testing Instructions**
 
